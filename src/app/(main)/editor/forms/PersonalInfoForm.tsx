@@ -20,8 +20,12 @@ import {
 } from "@/components/ui/select";
 import countryList from "@/data/country_dial_info.json";
 import { EditorFormProps } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
-export default function PersonalInfoForm({resumeData , setResumeData} : EditorFormProps) {
+export default function PersonalInfoForm({
+	resumeData,
+	setResumeData,
+}: EditorFormProps) {
 	const [dialCode, setDialCode] = React.useState<string>("--");
 	const form = useForm<PersonalInfoValues>({
 		resolver: zodResolver(personalInfoSchema),
@@ -41,10 +45,10 @@ export default function PersonalInfoForm({resumeData , setResumeData} : EditorFo
 	}
 
 	useEffect(() => {
-		if(resumeData.country){
+		if (resumeData.country) {
 			setDialCode(getCountryCode(resumeData.country) ?? "--");
 		}
-	} , [resumeData]);
+	}, [resumeData]);
 
 	useEffect(() => {
 		// This provides real-time validation for react-hook-form without the need to submit. Useful for images
@@ -58,19 +62,20 @@ export default function PersonalInfoForm({resumeData , setResumeData} : EditorFo
 				setDialCode(getCountryCode(country) ?? "--");
 			}
 
-			if(values.phone && dialCode !== '--'){
+			if (values.phone && dialCode !== "--") {
 				values.phone = `${dialCode}-${values.phone}`;
 			}
 
 			setResumeData({
-				...resumeData , 
-				...values
+				...resumeData,
+				...values,
 			});
-			
 		});
 
 		return unsubscribe;
-	}, [form , resumeData , setResumeData]);
+	}, [form, resumeData, setResumeData]);
+
+	const photoInputRef = React.useRef<HTMLInputElement>(null);
 
 	return (
 		<div className="max-w-xl mx-auto space-y-6">
@@ -86,17 +91,34 @@ export default function PersonalInfoForm({resumeData , setResumeData} : EditorFo
 						render={({ field: { value, ...fieldValues } }) => (
 							<FormItem>
 								<FormLabel>Photo</FormLabel>
-								<FormControl>
-									<Input
-										{...fieldValues}
-										type="file"
-										accept="image/*"
-										onChange={(e) => {
-											const file = e.target.files?.[0];
-											fieldValues.onChange(file);
-										}}
-									/>
-								</FormControl>
+								<div className="flex items-center gap-2">
+									<FormControl>
+										<Input
+											{...fieldValues}
+											type="file"
+											accept="image/*"
+											onChange={(e) => {
+												const file = e.target.files?.[0];
+												fieldValues.onChange(file);
+											}}
+											ref={photoInputRef}
+										/>
+									</FormControl>
+									{photoInputRef.current?.value && (
+										<Button
+											variant={"secondary"}
+											type="button"
+											onClick={() => {
+												fieldValues.onChange(null);
+												if (photoInputRef.current) {
+													photoInputRef.current.value = "";
+												}
+											}}
+										>
+											Remove
+										</Button>
+									)}
+								</div>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -193,7 +215,7 @@ export default function PersonalInfoForm({resumeData , setResumeData} : EditorFo
 								<FormLabel>Phone</FormLabel>
 								<FormControl>
 									<div className="flex items-center ">
-										<span className="px-2 py-[0.32rem] border rounded-l-md bg-zinc-900">
+										<span className="px-2 py-[0.32rem] border rounded-l-md">
 											{dialCode}
 										</span>
 										<Input
@@ -215,12 +237,12 @@ export default function PersonalInfoForm({resumeData , setResumeData} : EditorFo
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-										<Input
-											{...field}
-											type="email"
-											className="flex-1 rounded-r-md"
-											placeholder="Enter email"
-										/>
+									<Input
+										{...field}
+										type="email"
+										className="flex-1 rounded-r-md"
+										placeholder="Enter email"
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>

@@ -8,10 +8,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Resume {
@@ -32,11 +31,47 @@ model Resume {
   country     String?
   phone       String?
   email       String?
-  
+
+  workExperiences WorkExperience[]
   skills          String[]
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  education Education[]
+
+  @@map("resumes")
+}
+
+model WorkExperience {
+  id          String    @id @default(cuid())
+  position    String?
+  company     String?
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("resumes")
+  @@map("work_experiences")
+}
+
+model Education {
+  id String @id @default(cuid())
+
+  degree String?
+  school String?
+
+  startDate DateTime?
+  endDate   DateTime?
+  resumeId  String
+  resume    Resume    @relation(fields: [resumeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("educations")
 }
