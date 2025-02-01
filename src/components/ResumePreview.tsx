@@ -108,7 +108,7 @@ function PersonalInfoHeader({ resumeData }: ResumeSectionProps) {
           <p className='text-3xl font-bold' style={{ color: colorHex }}>
             {firstName} {lastName}
           </p>
-          <p className='font-medium' style={{ color: colorHex }}>
+          <p className='text-lg font-medium' style={{ color: colorHex }}>
             {jobTitle}
           </p>
           <p className='text-xs text-gray-500'>
@@ -133,7 +133,7 @@ function SummarySection({ resumeData }: ResumeSectionProps) {
       <hr className='border-2' style={{ borderColor: colorHex }} />
       {/* break-inside-avoid is used to avoid breaking the content inside the div  */}
       <div className='space-y-3 break-inside-avoid'>
-        <p className='text lg font-semibold' style={{ color: colorHex }}>
+        <p className='text-lg font-semibold' style={{ color: colorHex }}>
           Professional Profile
         </p>
         <div className='whitespace-pre-line text-sm'>{summary}</div>
